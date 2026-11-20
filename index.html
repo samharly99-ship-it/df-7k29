@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Debt-Free Planner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#059669">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--tx:#0f172a;--mu:#64748b;--bd:#e2e8f0;--ac:#059669;--ac2:#d1fae5;--rd:#e11d48;--in:#f1f5f9;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0b1120;--card:#131c31;--tx:#f1f5f9;--mu:#94a3b8;--bd:#25314d;--ac:#34d399;--ac2:#064e3b;--rd:#fb7185;--in:#1c2842}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0b1120;--card:#131c31;--tx:#f1f5f9;--mu:#94a3b8;--bd:#25314d;--ac:#34d399;--ac2:#064e3b;--rd:#fb7185;--in:#1c2842}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0 auto;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:480px;padding-bottom:88px}
+main{padding:14px;display:grid;gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
+h1{font-size:18px;margin:0}h2{font-size:12px;margin:6px 2px 0;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.mu{color:var(--mu);font-size:12px}.big{font-size:34px;font-weight:800;color:var(--ac);line-height:1.1;margin:4px 0}
+.big.bad{color:var(--rd);font-size:26px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.kv div{background:var(--in);border-radius:12px;padding:8px 10px}.kv small{display:block;color:var(--mu);font-size:10px;font-weight:700;text-transform:uppercase}.kv b{font-size:15px}
+.pre{display:flex;gap:8px;margin-top:12px;overflow-x:auto}
+button{font:inherit;cursor:pointer;border:0}
+.pre button{flex:none;padding:8px 12px;border-radius:12px;background:var(--in);color:var(--tx);font-weight:700;font-size:12px}
+.pre button.on{background:var(--ac);color:#fff}
+svg text{font-family:inherit}
+details{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px 14px}
+summary{font-weight:700;font-size:14px;cursor:pointer}
+.ir{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--bd);font-size:13px}
+.ir:first-of-type{border-top:0}.ir span{flex:1;min-width:0}
+.ir input[type=number],input[type=month]{width:84px;padding:8px;border-radius:10px;border:1px solid var(--bd);background:var(--in);color:var(--tx);font:inherit;font-weight:600}
+.ir input[type=number].s{width:70px}
+.hd{display:flex;gap:8px;font-size:10px;color:var(--mu);text-transform:uppercase;font-weight:700;justify-content:flex-end;padding-top:8px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}
+th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--bd);white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--mu);font-size:10px;text-transform:uppercase}
+.blk{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px}
+.blk.ok{opacity:.65;border-color:var(--ac)}
+.bh{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}.bh span{font-weight:700;color:var(--rd)}.blk.ok .bh span{color:var(--ac)}
+.bf{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);padding-top:8px;margin-top:6px;border-top:1px solid var(--bd)}.bf b{color:var(--tx)}
+.ck{width:28px;height:28px;border-radius:9px;border:2px solid var(--bd);background:transparent;color:transparent;font-weight:800}.ck.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.blk .btn{width:100%;margin-top:8px;padding:10px;border-radius:12px;background:var(--ac);color:#fff;font-weight:700}.blk.ok .btn{background:var(--in);color:var(--tx)}
+.xf input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bd);background:var(--in);color:var(--tx);font:inherit;margin-bottom:8px}.xf .r{display:flex;gap:8px}.xf .r button{flex:1;padding:10px;border-radius:12px;background:var(--ac);color:#fff;font-weight:700}.xf .r button.g{background:var(--in);color:var(--tx)}
+.u2{padding:6px 10px;border-radius:10px;background:var(--in);color:var(--tx);font-weight:700;font-size:12px}
+.rgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;justify-items:center}
+.neg{color:var(--rd);font-weight:700}
+.pg{display:none;gap:12px}.pg.on{display:grid}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+nav button{flex:1;background:none;color:var(--mu);padding:8px 0 6px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button i{font-style:normal;font-size:19px}nav button.on{color:var(--ac)}
+</style>
+</head>
+<body>
+<main>
+<section class="pg on" id="pg-home">
+  <div class="card"><h1>Debt-Free Planner</h1><div class="mu">Use the tabs at the bottom to move between pages.</div></div>
+  <div class="card" id="hero"></div>
+</section>
+<section class="pg" id="pg-income">
+  <h2>Money coming in each month</h2>
+  <div class="card"><div id="incbar"></div><div class="mu" style="margin:10px 0 2px">Type the amounts below. They add up automatically and the whole plan updates.</div><div id="incin"></div></div>
+</section>
+<section class="pg" id="pg-pay">
+  <h2>Pay month by month</h2>
+  <div id="blocks"></div>
+  <div class="card xf"><h3 style="margin:0 0 8px;font-size:15px">➕ Add an extra bill</h3><input type="text" id="xn" placeholder="What is it? (e.g. car repair)"><input type="number" inputmode="decimal" id="xa" placeholder="Amount"><div class="r"><button data-xadd="1">Next due month only</button><button class="g" data-xadd="0">Every month</button></div><div id="xlist"></div></div>
+</section>
+<section class="pg" id="pg-charts">
+  <h2>Total debt over time</h2>
+  <div class="card"><div id="line"></div></div>
+  <h2>Savings account build-up</h2>
+  <div class="card" id="svline"></div>
+  <h2>When each debt ends</h2>
+  <div class="card"><div id="gantt"></div></div>
+  <h2>What if you have extra bills?</h2>
+  <div class="card" id="whatif"></div>
+</section>
+<section class="pg" id="pg-more">
+  <h2>Update your numbers</h2>
+  <div id="inputs" style="display:grid;gap:10px"></div>
+  <h2>Month-by-month schedule</h2>
+  <div class="card tw" id="tbl"></div>
+<div class="card"><button class="u2" data-restart="1" style="width:100%;padding:12px">Restart from December</button><div class="mu" style="margin-top:6px">Clears all ticks, closed months and monthly money you typed. Your settings and extra bills stay.</div></div>
+</section>
+</main>
+<nav id="nav"><button data-tab="home" class="on"><i>🏠</i>Home</button><button data-tab="income"><i>💵</i>Income</button><button data-tab="pay"><i>✅</i>Pay</button><button data-tab="charts"><i>📊</i>Charts</button><button data-tab="more"><i>⚙️</i>More</button></nav>
+<script>
+(function(){
+'use strict';
+function sim(P){
+ // P: {start:{y,m}, inc:[a], deds:[{a,bal}], exp:[{a,on}], rent:{std,m1,m2}, one:[{a,k}], qard:{b,i}, bills:b, ext:b}
+ var q=P.qard.b,bl=P.bills,ex=P.ext,nb=0,sav=+P.sav0||0,bd=P.bd.b,wl=P.wl.b,cq=P.cq.b,rows=[],db=P.deds.map(function(d){return d.bal>0?d.bal:null});
+ var inc=P.inc.reduce(function(s,x){return s+x},0);
+ var cr=P.exp.map(function(e){return e.cap>0?e.cap:null}); // excludes rent
+ for(var k=1;k<=60;k++){var bsch=Math.min(P.bd.i,bd),living=0;P.exp.forEach(function(e,j){if(!e.on)return;if(e.bdfee&&bsch>0&&bsch>=P.bd.i-0.005)return;var a=e.a;if(cr[j]!==null){a=Math.min(a,cr[j]);cr[j]-=a}living+=a});
+  var ded=0;P.deds.forEach(function(d,j){var a=d.a;if(db[j]!==null){a=Math.min(a,db[j]);db[j]-=a}ded+=a});
+  var rent=k===1?P.rent.m1:k===2?P.rent.m2:P.rent.std;
+  var one=P.one.reduce(function(s,o){return s+(o.k===k?o.a:0)},0);
+  var ak=(P.add&&P.add[k])||0,avail=((P.inm&&P.inm[k]!=null)?P.inm[k]-ded:inc-ded)+ak,cash=avail-living-rent-one;
+  var inst=Math.min(P.qard.i,q),sch=(P.extp.by>0&&k>=P.extp.by)?ex:Math.min(k===1?P.extp.first:P.extp.i,ex),bsch=Math.min(P.bd.i,bd),wsch=Math.min(P.wl.i,wl),csch=Math.min(P.cq.i,cq),need=inst+sch+bsch+wsch+csch,net0=cash-need,short=Math.max(0,-net0),su=P.sv?Math.min(short,sav):0,borrow=P.sv?short-su:Math.max(0,need-cash),left=Math.max(0,net0);
+  q-=inst;ex-=sch;nb+=borrow;bd-=bsch;wl-=wsch;cq-=csch;sav-=su;
+  var pb=Math.min(left,bl);bl-=pb;left-=pb;
+  var pn=P.sv?0:Math.min(left,nb);nb-=pn;left-=pn;var pe=P.sv?0:Math.min(left,ex);ex-=pe;left-=pe;pe+=sch;
+  var pq=P.sv?0:Math.min(left,q);q-=pq;var sv=P.sv?left:0;sav+=sv;if(P.sv&&nb>0.005&&sav>=nb-0.005){pn=nb;sav-=nb;nb=0}
+  rows.push({k:k,net:avail,ak:ak,gap0:Math.max(0,ak-net0),ded:ded,cash:cash,inst:inst,sch:sch,borrow:borrow,pb:pb,pe:pe,pq:pq,pn:pn,nb:nb,sv:sv,svb:sav,su:su,pbd:bsch,bd:bd,pwl:wsch,wl:wl,pcq:csch,cq:cq,q:q,bl:bl,ex:ex,tot:q+bl+ex+nb+bd+wl+cq});
+  if(q+bl+ex+nb+bd+wl+cq<=0.005)break;
+ }
+ return rows;
+}
+var KEY='debtplan_v2';
+var DEF={start:'2026-12',
+ inc:[{n:'Stable salary',a:1050},{n:'Rida',a:100},{n:'Mhmd',a:200},{n:'Kassim',a:50},{n:'Other sources',a:0}],
+ ded:[{n:'End-of-service & social security',a:50,bal:0},{n:'Nour card (food)',a:85,bal:0}],
+ exp:[{n:'Electricity',a:150,on:1},{n:'Internet',a:35,on:1},{n:'Food (cash)',a:150,on:1},{n:'University transport',a:100,on:1},{n:'Work transport',a:50,on:1},{n:'Water',a:20,on:1},{n:'Medical',a:15,on:1},{n:'Telephone bill',a:55,on:1},{n:'Building',a:50,on:1,bdfee:1},{n:'Trading',a:100,on:1},{n:'Extra bills (buffer)',a:0,on:1}],
+ rent:{std:300,m1:450,m2:300},
+ one:[{n:'University registration (Oct 2027)',a:250,k:11},{n:'University registration (Oct 2028)',a:250,k:23},{n:'Other one-time',a:0,k:1}],
+ qard:{b:1600,i:125},bills:35,bd:{b:150,i:70},wl:{b:400,i:100},cq:{b:1053,i:81},mig2:1,mig3:1,mig5:1,mig6:1,ext:530,extp:{first:200,i:100,by:4},sv:1,sav0:0};
+function clone(o){return JSON.parse(JSON.stringify(o))}
+var S=load(),act='real';S.paid=S.paid||{};S.extra=S.extra||[];S.inm=S.inm||{};S.add=S.add||{};S.closed=S.closed||{};S.carry=S.carry||[];S.inc.forEach(function(x){if(x.n==='Base salary (gross)')x.n='Stable salary'});if(!S.inc.some(function(x){return x.n==='Other sources'}))S.inc.push({n:'Other sources',a:0});if(!S.mig5||!S.mig6){S.mig5=1;S.mig6=1;S.exp.forEach(function(e){if(e.n==='Telephone bill'||e.n==='Building'||e.n==='Trading')e.on=1})}var nextJ=0;function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}var lastRows=[];if(S.one&&S.one[0]&&S.one[0].k===1&&S.one[0].a===250)S.one=clone(DEF).one;if(S.extp&&S.extp.by===undefined)S.extp.by=4;if(S.sv===undefined){S.sv=1;S.sav0=0;S.exp.push({n:'Extra bills (buffer)',a:0,on:1})}S.exp.forEach(function(e){if(e.n==='Telephone bill'&&e.a===54)e.a=55;});if(!S.mig2){S.mig2=1;if(S.bills===35)S.bills=185;S.exp.forEach(function(e){if(e.n==='Building'&&e.cap===150)e.cap=0})}if(!S.bd){S.bd={b:150,i:20};if(S.bills===185)S.bills=35}if(!S.mig3){S.mig3=1;if(S.bd.i===20)S.bd.i=70;S.exp.forEach(function(e){if(e.n==='Building')e.bdfee=1})}if(!S.wl){var wd=S.ded.filter(function(d){return d.n==='Work loan'})[0];S.wl={b:wd&&wd.bal>0?wd.bal:400,i:100};S.ded=S.ded.filter(function(d){return d.n!=='Work loan'})}if(!S.cq){var td=S.ded.filter(function(d){return d.n==='Takaful loan'})[0];S.cq={b:td&&td.bal>0?td.bal:1053,i:81};S.ded=S.ded.filter(function(d){return d.n!=='Takaful loan'})}
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.qard)return s}catch(e){}return clone(DEF)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function m(n){return (n<0?'-':'')+'$'+Math.abs(Math.round(n)).toLocaleString('en-US')}
+function d0(k){var p=S.start.split('-');return new Date(+p[0],+p[1]-1+k,1)}
+function mon(k){return d0(k).toLocaleDateString('en-US',{month:'short',year:'numeric'})}
+function ms(k){var d=d0(k);return d.toLocaleDateString('en-US',{month:'short'})+' ’'+String(d.getFullYear()).slice(2)}
+function P(){var p={inc:[S.inc.reduce(function(s,x){return s+(+x.a||0)},0)],deds:S.ded.map(function(d){return{a:+d.a||0,bal:+d.bal||0}}),exp:S.exp.map(function(e){return{a:+e.a||0,on:e.on,cap:+e.cap||0,bdfee:e.bdfee?1:0}}),rent:S.rent,one:S.one.map(function(o){return{a:+o.a||0,k:+o.k||1}}),qard:S.qard,bills:+S.bills||0,bd:{b:+S.bd.b||0,i:+S.bd.i||0},wl:{b:+S.wl.b||0,i:+S.wl.i||0},cq:{b:+S.cq.b||0,i:+S.cq.i||0},ext:+S.ext||0,extp:{first:+S.extp.first||0,i:+S.extp.i||0,by:+S.extp.by||0},sv:S.sv?1:0,sav0:+S.sav0||0,inm:S.inm,add:S.add};S.extra.forEach(function(x){if(x.k>0)p.one.push({a:+x.a||0,k:x.k});else p.exp.push({a:+x.a||0,on:1})});return p}
+
+function endOf(rows,key){for(var i=0;i<rows.length;i++)if(rows[i][key]<=0.005)return i+1;return rows.length}
+function gantt(rows,N,done){
+  var W=340,L=100,R=16,st=(W-L-R)/N,it=[];
+  if(S.qard.b>0)it.push({n:'Qard Hasan',e:endOf(rows,'q'),c:'var(--ac)'});
+  if(S.bills>0)it.push({n:'Unpaid bills',e:endOf(rows,'bl'),c:'#f59e0b'});if(S.bd.b>0)it.push({n:'Building debt',e:endOf(rows,'bd'),c:'#0ea5e9'});if(S.wl.b>0)it.push({n:'Work loan',e:endOf(rows,'wl'),c:'#64748b'});if(S.cq.b>0)it.push({n:'Company Qard loan',e:endOf(rows,'cq'),c:'#8b5cf6'});
+  if(S.ext>0)it.push({n:'External debt',e:endOf(rows,'ex'),c:'var(--rd)'});if(rows.some(function(r){return r.borrow>0}))it.push({n:'New borrowing',e:(function(){for(var i=rows.length-1;i>=0;i--)if(rows[i].nb>0.005)return i+1;return 1})(),c:'#a855f7'});
+  S.ded.forEach(function(d){if(d.bal>0&&d.a>0)it.push({n:d.n,e:Math.min(N,Math.ceil(d.bal/d.a)),c:'#64748b'})});
+  var H=it.length*30+34,g=N<=14?2:N<=30?3:6,s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Debt timeline">';
+  for(var k=0;k<=N;k+=g)s+='<line x1="'+(L+k*st)+'" x2="'+(L+k*st)+'" y1="4" y2="'+(H-22)+'" stroke="var(--bd)"/><text x="'+(L+k*st)+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="var(--mu)">'+ms(k)+'</text>';
+  it.forEach(function(x,i){var y=8+i*30,w=Math.max(6,x.e*st),end=ms(x.e-1),inside=w>72;
+    s+='<text x="'+(L-6)+'" y="'+(y+14)+'" font-size="10.5" text-anchor="end" fill="var(--tx)">'+x.n.replace(' & social security','').replace(' (food)','')+'</text><rect x="'+L+'" y="'+y+'" width="'+w+'" height="20" rx="8" fill="'+x.c+'"/>'+
+    '<text x="'+(inside?L+w-8:L+w+5)+'" y="'+(y+14)+'" font-size="10" font-weight="700" text-anchor="'+(inside?'end':'start')+'" fill="'+(inside?'#fff':'var(--tx)')+'">'+end+'</text>'});
+  return s+'</svg><div class="mu">Grey bars are salary-deducted loans (they stop when paid).'+(done?'':' Debts are not cleared within 5 years.')+'</div>';
+}
+function bars(vals,labs,c,peak){var W=340,H=176,L=4,R=4,T=22,B=24,n=vals.length,mx=Math.max.apply(null,vals)||1,gap=n>20?2:4,bw=(W-L-R-gap*(n-1))/n,pi=vals.indexOf(mx),step=Math.ceil(n/7),s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img">';
+  vals.forEach(function(v,i){var h=v>0?Math.max(3,v/mx*(H-T-B)):0,x=L+i*(bw+gap),y=H-B-h,pk=peak&&i===pi;
+    s+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="4" fill="'+(pk?'var(--rd)':c)+'"/>';
+    if(pk||i===n-1)s+='<text x="'+Math.min(W-22,Math.max(22,x+bw/2))+'" y="'+(y-5)+'" font-size="10" font-weight="700" text-anchor="middle" fill="'+(pk?'var(--rd)':c)+'">'+m(v)+'</text>';
+    if(i%step===0||(i===n-1&&(n-1)%step>=3))s+='<text x="'+(x+bw/2)+'" y="'+(H-8)+'" font-size="8.5" text-anchor="middle" fill="var(--mu)">'+labs[i]+'</text>'});
+  return s+'</svg>'}
+function line(rows,t0){var v=[t0].concat(rows.map(function(r){return r.tot})),l=['Start'].concat(rows.map(function(r,i){return ms(i)}));return bars(v,l,'var(--ac)',true)+'<div class="mu">Each block is your total debt at the end of that month. Red marks the highest point.</div>'}
+function items(r,i){return [{k:'q',n:'Qard Hasan',a:r.inst+r.pq},{k:'e',n:'External debt',a:r.pe},{k:'b',n:'Unpaid bills',a:r.pb},{k:'n',n:'Repay new borrowing',a:r.pn},{k:'d',n:'Building debt',a:r.pbd},{k:'w',n:'Work loan (company)',a:r.pwl},{k:'c',n:'Company Qard loan',a:r.pcq}].filter(function(x){return x.a>0.005})}
+function costs(i,r){var c=[{k:'rent',n:'Rent',a:i===0?+S.rent.m1:i===1?+S.rent.m2:+S.rent.std}];S.ded.forEach(function(d,j){var a=+d.a||0,b=+d.bal||0,v=b>0?Math.max(0,Math.min(a,b-a*i)):a;if(v>0)c.push({k:'sd'+j,n:d.n,a:v,sal:1})});
+  S.exp.forEach(function(e,j){if(e.bdfee&&r&&r.pbd>0&&r.pbd>=S.bd.i-0.005)return;if(e.on&&+e.a>0)c.push({k:'x'+j,n:e.n,bill:/^(Telephone bill|Building|Trading)$/.test(e.n)?1:0,a:+e.cap>0?Math.max(0,Math.min(+e.a,e.cap-e.a*i)):+e.a})});
+  S.one.forEach(function(o,j){if(+o.k===i+1&&+o.a>0)c.push({k:'o'+j,n:o.n,a:+o.a})});
+  S.extra.forEach(function(x){if(+x.k===0||+x.k===i+1)c.push({k:'y'+x.id,n:x.n,a:+x.a})});
+  return c.filter(function(x){return x.a>0})}
+function allx(r,i){return items(r,i).concat(costs(i,r))}
+function iline(x,i){var p=!!S.paid[i+':'+x.k];return '<div class="ir"><button class="ck'+(p?' on':'')+'" data-pay="'+i+':'+x.k+'" aria-label="Mark paid">✓</button><span'+(p?' style="text-decoration:line-through;opacity:.6"':'')+'>'+esc(x.n)+'</span><b>'+m(x.a)+'</b></div>'}
+function ring(f){var d=f>=0.995;return '<svg width="36" height="36" viewBox="0 0 36 36" role="img" aria-label="'+Math.round(f*100)+'% paid"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--in)" stroke-width="5"/><circle cx="18" cy="18" r="14" fill="none" stroke="var(--ac)" stroke-width="5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="'+(87.96*(1-f))+'" transform="rotate(-90 18 18)"/><text x="18" y="18" text-anchor="middle" dominant-baseline="central" font-size="'+(d?15:9)+'" font-weight="800" fill="'+(d?'var(--ac)':'var(--tx)')+'">'+(d?'✓':Math.round(f*100)+'%')+'</text></svg>'}
+function mfrac(r,i){if(S.closed[i]&&!S.carry.some(function(e){return e.from===i}))return 1;var t=0,p=0;allx(r,i).forEach(function(x){t+=x.a;if(S.paid[i+':'+x.k])p+=x.a});if(i===nextJ)S.carry.forEach(function(e){t+=e.a;if(S.paid[e.id])p+=e.a});return t>0?p/t:0}
+function dedList(i){return S.ded.map(function(d){var a=+d.a||0,b=+d.bal||0,v=b>0?Math.max(0,Math.min(a,b-a*i)):a;return v>0?esc(d.n)+' '+m(v):null}).filter(Boolean).join(' · ')}
+function shortHtml(r,i){var g=r.gap0||0,ak=r.ak||0;if(g<0.5&&ak<0.5&&r.borrow<0.5)return '';return '<div class="ir" style="border:0;padding-bottom:0"><span><b style="color:var(--rd)">'+(g>0.5?'Shortage this month: '+m(g):'No shortage')+'</b><div class="mu">'+(r.su>0.5?'Savings cover '+m(r.su)+'. ':'')+(r.borrow>0.5?'Still short after additional pay: <b>'+m(r.borrow)+'</b>':'Covered ✓')+'</div></span></div><div class="ir" style="border:0"><span>Additional pay I can add<div class="mu">extra money for this month</div></span><input type="number" inputmode="decimal" data-add="'+(i+1)+'" value="'+(S.add[i+1]!=null?S.add[i+1]:'')+'" placeholder="0"></div>'}
+function cline(e){var p=!!S.paid[e.id];return '<div class="ir"><button class="ck'+(p?' on':'')+'" data-cpay="'+e.id+'" aria-label="Mark paid">✓</button><span'+(p?' style="text-decoration:line-through;opacity:.6"':'')+'>'+esc(e.n)+'<div class="mu">from '+mon(e.from)+(p?' · paid':' · still unpaid')+'</div></span><b>'+m(e.a)+'</b></div>'}
+function carryHtml(i){if(i!==nextJ||!S.carry.length)return '';return '<div class="mu" style="margin-top:8px;font-weight:700;color:var(--rd)">CARRIED FROM EARLIER MONTHS · stays until paid</div>'+S.carry.map(cline).join('')}
+function blk(r,i){var its=items(r,i),cs=costs(i,r),due=0;its.concat(cs).forEach(function(x){if(!S.paid[i+':'+x.k])due+=x.a});var ca=i===nextJ?S.carry:[];ca.forEach(function(e){if(!S.paid[e.id])due+=e.a});
+  var cl=!!S.closed[i];return '<div class="blk'+(cl?' ok':'')+'"><div class="bh"><div style="display:flex;align-items:center;gap:8px">'+pie(mpie(r,i),38)+'<b>'+mon(i)+'</b></div><span>'+(cl?'Closed ✓':due===0?'All paid · ready to close':'Due '+m(due))+'</span></div>'+
+   '<div class="ir" style="border:0"><span>Money I have this month<div class="mu">planned (before salary deductions): '+m(S.inc.reduce(function(s,x){return s+(+x.a||0)},0))+'</div></span><input type="number" inputmode="decimal" data-inm="'+(i+1)+'" value="'+(S.inm[i+1]!=null?S.inm[i+1]:'')+'" placeholder="planned"></div>'+
+   shortHtml(r,i)+(its.length?'<div class="mu" style="margin-top:8px;font-weight:700">DEBTS</div>'+its.map(function(x){return iline(x,i)}).join(''):'')+
+   '<div class="mu" style="margin-top:8px;font-weight:700">RENT &amp; LIVING COSTS</div>'+cs.filter(function(x){return !x.sal&&!x.bill}).map(function(x){return iline(x,i)}).join('')+'<div class="mu" style="margin-top:8px;font-weight:700">MONTHLY BILLS · phone, building, trading</div>'+cs.filter(function(x){return x.bill}).map(function(x){return iline(x,i)}).join('')+'<div class="mu" style="margin-top:8px;font-weight:700">DEDUCTED FROM YOUR SALARY · tick to deduct</div>'+cs.filter(function(x){return x.sal}).map(function(x){return iline(x,i)}).join('')+carryHtml(i)+
+   (r.borrow>0.5?'<div class="mu neg">Cash short this month: '+m(r.borrow)+'. It is added to External debt once the month is paid.</div>':'')+
+   (function(){var L=Math.max(0,r.cash-r.inst-r.sch-r.pbd-r.pwl-r.pcq);return '<div class="bf" style="border-top:0;padding-top:4px"><span>Left after paying everything</span><b style="color:var(--ac)">'+m(L)+'</b></div>'+(L>0.5?'<div class="mu">→ Savings <b style="color:var(--ac)">'+m(r.sv)+'</b>'+(r.pb+r.pn>0.5?' · '+m(r.pb+r.pn)+' clears unpaid bills or borrowed money':'')+'</div>':'')})()+
+   '<div class="bf"><span>Savings balance after this month</span><b style="color:var(--ac)">'+m(r.svb)+'</b></div>'+(r.su>0.5?'<div class="mu">Taken from savings to cover a shortfall: <b>'+m(r.su)+'</b></div>':'')+'<div class="bf"><span>Debt left after this month</span><b>'+m(r.tot)+'</b></div>'+
+   (cl?'<div class="mu"><b style="color:var(--ac)">Month closed ✓</b></div><button class="btn" data-reopen="'+i+'">Reopen month</button>':(due>0?'<button class="btn" data-paym="'+i+'">Pay all '+m(due)+'</button>':'')+'<button class="btn" data-close="'+i+'" style="margin-top:8px;'+(i!==nextJ?'background:var(--in);color:var(--mu)':due>0?'background:#d97706':'')+'"'+(i!==nextJ?' disabled':'')+'>'+(i!==nextJ?'Close earlier months first':due>0?'Close month · carry '+m(due)+' unpaid to next month':'✔ Execute: close this month')+'</button>')+'</div>'}
+function blocks(rows,t0){lastRows=rows;$('xlist').innerHTML=S.extra.map(function(x,i){return '<div class="ir"><span>'+esc(x.n)+'<div class="mu">'+(x.k?mon(x.k-1)+' only':'every month')+'</div></span><b>'+m(x.a)+'</b><button class="u2" data-xdel="'+i+'">✕</button></div>'}).join('');
+  var j=0;while(j<rows.length&&S.closed[j])j++;nextJ=j;
+  var ps=0;rows.forEach(function(r,i){items(r,i).forEach(function(x){if(S.paid[i+':'+x.k])ps+=x.a})});
+  var svNow=j>0?rows[j-1].svb:(+S.sav0||0),svEnd=rows[rows.length-1].svb;var cdebt=S.carry.reduce(function(s,e){return s+(e.debt&&!S.paid[e.id]?e.a:0)},0),base=j>0?rows[j-1].tot:t0,part=0;if(j<rows.length)items(rows[j],j).forEach(function(x){if(S.paid[j+':'+x.k])part+=x.a});
+  $('blocks').innerHTML=(function(){var off=S.exp.filter(function(e){return /^(Telephone bill|Building|Trading)$/.test(e.n)&&!e.on});return off.length?'<div class="card" style="border-color:#d97706;margin-bottom:10px"><b>⚠ Switched off in your plan: '+off.map(function(e){return e.n}).join(', ')+'</b><div class="mu" style="margin:4px 0 8px">These bills are not counted and not shown below.</div><button class="btn" style="width:100%;padding:10px;border-radius:12px;background:#d97706;color:#fff;font-weight:700" data-incbills="1">Include them now</button></div>':''})()+'<div class="card"><div class="kv" style="margin-top:0"><div><small>Debt paid so far</small><b style="color:var(--ac)">'+m(ps)+'</b></div><div><small>Debt remaining now</small><b>'+m(Math.max(0,base-part+cdebt))+'</b></div><div><small>Savings now</small><b style="color:var(--ac)">'+m(svNow)+'</b></div><div><small>Savings at the end</small><b>'+m(svEnd)+'</b></div></div><div class="mu" style="margin-top:8px">If a month’s cash is short, the shortfall is borrowed and added to External debt, so the total can rise.</div></div>'+
+   '<div class="card" style="margin-top:10px"><div class="mu" style="margin-bottom:8px">Each pie is one month. Green = paid (ticked), blue = still to pay, red = shortage, gold = earned money left over. Nothing is green until you tick.</div><div class="rgrid">'+rows.map(function(r,i){return '<div>'+pie(mpie(r,i),38)+'<div class="mu" style="'+(i===nextJ?'background:var(--ac);color:#fff;font-weight:800;border-radius:8px;padding:1px 6px':S.closed[i]?'color:var(--ac);font-weight:700':'')+'">'+ms(i)+'</div></div>'}).join('')+'</div></div>'+(j>0?'<div class="card" style="margin-top:10px;border-color:var(--ac)"><div style="display:flex;justify-content:space-between;align-items:center"><b>'+mon(j-1)+' is closed ✓</b><button class="u2" data-reopen="'+(j-1)+'">Reopen</button></div><div class="mu" style="margin-top:4px">Debt left after it: <b>'+m(rows[j-1].tot)+'</b> · Added to savings: <b>'+m(rows[j-1].sv)+'</b></div></div>':'')+(j<rows.length?'<div class="mu" style="margin:8px 2px 4px">Next payments due. Tap ✓ for each one you pay:</div>'+blk(rows[j],j):'<div class="card"><b>All payments made 🎉</b></div>')+
+   '<details style="margin-top:10px"><summary>All months ('+rows.length+')</summary><div style="display:grid;gap:10px;margin-top:10px">'+rows.map(function(r,i){return blk(r,i)}).join('')+'</div></details>';
+}
+function incbar(){var it=S.inc.map(function(x,i){return{n:x.n,a:+x.a||0,c:['#059669','#0ea5e9','#8b5cf6','#f59e0b','#64748b','#ec4899'][i%6]}}),tot=it.reduce(function(s,x){return s+x.a},0),aid=tot-(it[0]?it[0].a:0),W=340,x0=0,svg='<svg viewBox="0 0 '+W+' 38" width="100%" role="img" aria-label="Money in each month">';
+  it.forEach(function(x){if(x.a<=0)return;var w=tot>0?x.a/tot*W:0;svg+='<rect x="'+x0+'" y="4" width="'+Math.max(1,w-2)+'" height="30" rx="6" fill="'+x.c+'"/>'+(w>46?'<text x="'+(x0+w/2)+'" y="23" font-size="10" font-weight="700" text-anchor="middle" fill="#fff">'+m(x.a)+'</text>':'');x0+=w});
+  $('incbar').innerHTML='<div class="kv" style="margin:0 0 10px"><div><small>Money in each month</small><b style="color:var(--ac)">'+m(tot)+'</b></div><div><small>Aid from outside</small><b>'+m(aid)+'</b></div></div>'+svg+'</svg><div style="margin-top:8px">'+it.map(function(x){return '<div class="ir" style="border:0;padding:3px 0"><span style="flex:none;width:10px;height:10px;border-radius:3px;background:'+x.c+'"></span><span>'+esc(x.n)+'</span><b>'+m(x.a)+'</b></div>'}).join('')+'</div>'}
+function sline(rows){var v=[+S.sav0||0].concat(rows.map(function(r){return r.svb}));if(Math.max.apply(null,v)<=0)return '<div class="mu">No savings yet. Money left after payments builds up here.</div>';var l=['Start'].concat(rows.map(function(r,i){return ms(i)}));return bars(v,l,'var(--ac)',false)+'<div class="mu">Each block is your savings balance at the end of that month. It rises with money left over, and falls when it covers a shortfall or clears borrowed money.</div>'}
+function whatif(){var bi=S.exp.findIndex(function(e){return e.n==='Extra bills (buffer)'});if(bi<0)return;var pp=P();
+  $('whatif').innerHTML=[0,25,50,100,150].map(function(v){var q=JSON.parse(JSON.stringify(pp));q.exp[bi]={a:v,on:1};var r=sim(q),l=r[r.length-1],ok=l.tot<=0.005,sv=r[r.length-1].svb;
+    return '<div class="ir"><span>+$'+v+' a month<div class="mu">saved by then: '+m(sv)+'</div></span><b>'+(ok?mon(r.length-1):'Not in 5 years')+'</b><button class="u2" data-buf="'+v+'">Use</button></div>'}).join('')+'<div class="mu" style="padding-top:6px">Debt-free month if unplanned bills cost this much every month. Tap Use to put it in your plan.</div>';
+}
+function showTab(t){S.tab=t;var a=document.querySelectorAll('.pg');for(var i=0;i<a.length;i++)a[i].className='pg'+(a[i].id==='pg-'+t?' on':'');var b=document.querySelectorAll('#nav button');for(var j=0;j<b.length;j++)b[j].className=b[j].dataset.tab===t?'on':'';save();window.scrollTo(0,0)}
+function curJ(rows){var j=0;while(j<rows.length&&S.closed[j])j++;return j}
+function mpie(r,i){var N=0,P=0;allx(r,i).forEach(function(x){N+=x.a;if(S.paid[i+':'+x.k])P+=x.a});if(i===nextJ)S.carry.forEach(function(e){N+=e.a;if(S.paid[e.id])P+=e.a});
+  var E=(r.net||0)+(r.ded||0),U=N-P,sh=Math.min(Math.max(0,N-E),U);return{E:E,N:N,P:P,rem:U-sh,sh:sh,left:Math.max(0,E-N)}}
+function lbl(x,y,t,sz){return '<text x="'+x+'" y="'+y+'" font-size="'+(sz>=130?11:9)+'" font-weight="800" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="rgba(0,0,0,.65)" stroke-width="2.5" style="paint-order:stroke">'+t+'</text>'}
+function pie(d,sz,lab){var parts=[[d.P,'var(--ac)'],[d.rem,'#3b82f6'],[d.sh,'var(--rd)'],[d.left,'#f59e0b']],T=parts.reduce(function(s,x){return s+x[0]},0),c=sz/2,r=c-2,a0=-Math.PI/2,s='<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 '+sz+' '+sz+'" role="img" aria-label="Month pie">';
+  if(T<=0)return s+'<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="var(--in)"/></svg>';
+  parts.forEach(function(p){if(p[0]<=0.005)return;var f=p[0]/T;if(f>=0.9999){s+='<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="'+p[1]+'"/>';if(lab)s+=lbl(c,c,m(p[0]),sz);return}
+    var a1=a0+f*2*Math.PI,x0=c+r*Math.cos(a0),y0=c+r*Math.sin(a0),x1=c+r*Math.cos(a1),y1=c+r*Math.sin(a1);
+    s+='<path d="M'+c+','+c+' L'+x0+','+y0+' A'+r+','+r+' 0 '+(f>0.5?1:0)+' 1 '+x1+','+y1+' Z" fill="'+p[1]+'" stroke="var(--card)" stroke-width="1.5"/>';if(lab&&f>=0.07){var am=(a0+a1)/2;s+=lbl(c+r*0.6*Math.cos(am),c+r*0.6*Math.sin(am),m(p[0]),sz)}a0=a1});
+  return s+'</svg>'}
+function heroPie(rows){var j=Math.min(nextJ,rows.length-1);return '<div style="text-align:center;flex:none">'+pie(mpie(rows[j],j),140,true)+'<div class="mu" style="margin-top:2px;color:var(--ac)"><b>'+mon(j)+'</b></div></div>'}
+function pieLegend(rows){var j=Math.min(nextJ,rows.length-1),d=mpie(rows[j],j);function dot(c,l,v){return '<span style="white-space:nowrap"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+c+';margin-right:4px"></span>'+l+' <b>'+m(v)+'</b></span>'}
+  return '<div class="mu" style="margin-top:10px"><b>'+mon(j)+' · earned '+m(d.E)+'</b></div><div class="mu" style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px">'+dot('var(--ac)','Paid',d.P)+dot('#3b82f6','Remaining',d.rem)+dot('var(--rd)','Shortage',d.sh)+dot('#f59e0b','Earned left over',d.left)+'</div>'}
+function render(){
+  save();
+  var rows=sim(P()),N=rows.length,last=rows[N-1],done=last.tot<=0.005,t0=(+S.qard.b||0)+(+S.bills||0)+(+S.bd.b||0)+(+S.wl.b||0)+(+S.cq.b||0)+(+S.ext||0);
+  var pk=rows.reduce(function(a,r,i){return r.tot>a.v?{v:r.tot,i:i}:a},{v:t0,i:-1}),r3=rows[Math.min(5,N-1)],bor=rows.reduce(function(s,r){return s+r.borrow},0),gap=r3.cash-r3.inst-(r3.sch||0)-(r3.pbd||0)-(r3.pwl||0)-(r3.pcq||0);
+  nextJ=curJ(rows);$('hero').innerHTML='<div style="display:flex;gap:10px;align-items:center"><div style="flex:1;min-width:0"><div class="mu">You finish paying your debts in</div>'+
+   (done?'<div class="big">'+mon(N-1)+'</div><div class="mu">'+N+' months from '+mon(0)+'</div>':'<div class="big bad">Not within 5 years</div><div class="mu">You are short '+m(-gap)+' every typical month and keep borrowing. Lower expenses, pause trading or add income.</div>')+'</div>'+heroPie(rows)+'</div>'+pieLegend(rows)+
+   '<div class="kv"><div><small>Debts now</small><b>'+m(t0)+'</b></div><div><small>Peak debt</small><b>'+m(pk.v)+(pk.i>=0?' · '+ms(pk.i):'')+'</b></div>'+
+   '<div><small>Steady month after Qard</small><b class="'+(gap<0?'neg':'')+'">'+(gap>=0?'+':'')+m(gap)+'</b></div><div><small>Borrowed on top</small><b>'+m(bor)+'</b></div></div>'+
+   '<div class="pre"><button data-pre="real" class="'+(act==='real'?'on':'')+'">Reset to my plan (all bills on)</button></div>';
+  blocks(rows,t0);whatif();$('gantt').innerHTML=gantt(rows,N,done);$('line').innerHTML=line(rows,t0);incbar();$('svline').innerHTML=sline(rows);
+  $('tbl').innerHTML='<table><tr><th>Month</th><th>Cash left</th><th>Qard paid</th><th>Borrowed</th><th>Other debts paid</th><th>Debt left</th><th>To savings</th><th>Savings balance</th></tr>'+rows.map(function(r,i){return '<tr><td>'+ms(i)+'</td><td class="'+(r.cash<0?'neg':'')+'">'+m(r.cash)+'</td><td>'+m(r.inst+r.pq)+'</td><td>'+(r.borrow?m(r.borrow):'—')+'</td><td>'+m(r.pe+r.pb+r.pn+r.pbd+r.pwl+r.pcq)+'</td><td><b>'+m(r.tot)+'</b></td><td>'+(r.sv?m(r.sv):'—')+'</td><td>'+m(r.svb)+'</td></tr>'}).join('')+'</table>';
+}
+function row(label,path,val,cls,extra){return '<label class="ir">'+(extra||'')+'<span>'+label+'</span><input type="number" inputmode="decimal" class="'+(cls||'')+'" data-p="'+path+'" value="'+val+'"></label>'}
+function build(){
+  var h='';$('incin').innerHTML=S.inc.map(function(x,i){return row(x.n,'inc.'+i+'.a',x.a)}).join('');
+  h+='<details><summary>Salary deductions</summary><div class="hd"><span style="width:84px;text-align:center">Monthly</span><span style="width:70px;text-align:center">Left to pay</span></div>'+S.ded.map(function(x,i){return '<div class="ir"><span>'+x.n+'</span><input type="number" inputmode="decimal" data-p="ded.'+i+'.a" value="'+x.a+'"><input type="number" inputmode="decimal" class="s" data-p="ded.'+i+'.bal" value="'+(x.bal||'')+'" placeholder="always"></div>'}).join('')+'<div class="mu" style="padding-top:6px">Enter what is left on a loan and its deduction stops when it is paid. Leave empty to keep deducting every month.</div></details>';
+  h+='<details><summary>Living expenses (tick = include)</summary>'+row('Rent (standard)','rent.std',S.rent.std)+row('Rent in month 1','rent.m1',S.rent.m1)+row('Rent in month 2','rent.m2',S.rent.m2)+S.exp.map(function(x,i){return '<div class="ir"><input type="checkbox" data-c="exp.'+i+'.on"'+(x.on?' checked':'')+'><span>'+x.n+'</span><input type="number" inputmode="decimal" data-p="exp.'+i+'.a" value="'+x.a+'"><input type="number" inputmode="decimal" class="s" data-p="exp.'+i+'.cap" value="'+(x.cap||'')+'" placeholder="no limit"></div>'}).join('')+'<div class="mu" style="padding-top:6px">(Building has no limit.) First box: monthly amount. Second box: stop after this total. Leave empty for no limit.</div>'+'</details>';
+  h+='<details><summary>One-time costs</summary><div class="hd"><span style="width:84px;text-align:center">Amount</span><span style="width:70px;text-align:center">Month #</span></div>'+S.one.map(function(x,i){return '<div class="ir"><span>'+x.n+'</span><input type="number" inputmode="decimal" data-p="one.'+i+'.a" value="'+x.a+'"><input type="number" class="s" data-p="one.'+i+'.k" value="'+x.k+'"></div>'}).join('')+'</details>';
+  h+='<details><summary>Debts and start month</summary>'+row('Qard Hasan balance','qard.b',S.qard.b)+row('Qard Hasan installment','qard.i',S.qard.i)+row('Unpaid bills (internet)','bills',S.bills)+row('Building debt','bd.b',S.bd.b)+row('Building debt: monthly (includes the $50 fee until paid)','bd.i',S.bd.i)+row('Work loan (company) balance','wl.b',S.wl.b)+row('Work loan: monthly payment','wl.i',S.wl.i)+row('Company Qard loan balance','cq.b',S.cq.b)+row('Company Qard loan: monthly','cq.i',S.cq.i)+row('External debt','ext',S.ext)+row('External: first payment','extp.first',S.extp.first)+row('External: monthly after','extp.i',S.extp.i)+row('External: finish by month #','extp.by',S.extp.by)+'<label class="ir"><span>Put spare cash in savings (untick = pay debts faster)</span><input type="checkbox" data-c="sv"'+(S.sv?' checked':'')+'></label>'+row('Savings now','sav0',S.sav0)+'<label class="ir"><span>First month of repayment</span><input type="month" data-s value="'+S.start+'"></label></details>';
+  $('inputs').innerHTML=h;
+}
+function setp(path,v){var a=path.split('.'),o=S;for(var i=0;i<a.length-1;i++)o=o[a[i]];o[a[a.length-1]]=v}
+document.addEventListener('change',function(e){var t=e.target;
+  if(t.dataset.add){var av=parseFloat(t.value);if(t.value===''||isNaN(av)||av<=0)delete S.add[t.dataset.add];else S.add[t.dataset.add]=av;act='';render();return}if(t.dataset.inm){var vv=parseFloat(t.value);if(t.value===''||isNaN(vv))delete S.inm[t.dataset.inm];else S.inm[t.dataset.inm]=vv;act='';render();return}
+  if(t.dataset.p){setp(t.dataset.p,parseFloat(t.value)||0);act='';render()}
+  else if(t.dataset.c){setp(t.dataset.c,t.checked?1:0);act='';render()}
+  else if(t.dataset.s&&t.value){S.start=t.value;render()}});
+document.addEventListener('click',function(e){var xa=e.target.closest('[data-xadd]'),xd=e.target.closest('[data-xdel]');if(xa){var xv=parseFloat($('xa').value);if(!(xv>0))return;S.extra.push({id:Date.now()+Math.floor(Math.random()*1000),n:$('xn').value.trim()||'Extra bill',a:xv,k:xa.dataset.xadd==='1'?nextJ+1:0});$('xn').value='';$('xa').value='';render();return}if(xd){S.extra.splice(+xd.dataset.xdel,1);render();return}var rs=e.target.closest('[data-restart]');if(rs){if(rs.dataset.c){S.paid={};S.closed={};S.carry=[];S.inm={};S.add={};S.start='2026-12';build();render();return}rs.dataset.c='1';rs.textContent='Tap again to confirm restart';setTimeout(function(){delete rs.dataset.c;rs.textContent='Restart from December'},3500);return}var tb=e.target.closest('[data-tab]');if(tb){showTab(tb.dataset.tab);return}var ib=e.target.closest('[data-incbills]');if(ib){S.exp.forEach(function(e2){if(/^(Telephone bill|Building|Trading)$/.test(e2.n))e2.on=1});build();render();return}var cp=e.target.closest('[data-cpay]');if(cp){S.paid[cp.dataset.cpay]=!S.paid[cp.dataset.cpay];render();return}var cb=e.target.closest('[data-close]'),rb=e.target.closest('[data-reopen]');if(cb){var ci=+cb.dataset.close;if(ci!==nextJ)return;var dk=items(lastRows[ci],ci).map(function(x){return x.k});S.carry=S.carry.filter(function(e){if(S.paid[e.id]){delete S.paid[e.id];return false}return true});allx(lastRows[ci],ci).forEach(function(x){if(!S.paid[ci+':'+x.k])S.carry.push({id:'cr:'+ci+':'+x.k,from:ci,n:x.n,a:x.a,debt:dk.indexOf(x.k)>=0})});S.closed[ci]=true;render();return}if(rb){var ri=+rb.dataset.reopen;Object.keys(S.closed).forEach(function(k){if(+k>=ri)delete S.closed[k]});S.carry=S.carry.filter(function(e){if(e.from>=ri){delete S.paid[e.id];return false}return true});render();return}var bf=e.target.closest('[data-buf]');if(bf){var bj=S.exp.findIndex(function(e2){return e2.n==='Extra bills (buffer)'});S.exp[bj].a=+bf.dataset.buf;S.exp[bj].on=1;act='';build();render();return}var pb=e.target.closest('[data-pay]'),pm=e.target.closest('[data-paym]');if(pb){S.paid[pb.dataset.pay]=!S.paid[pb.dataset.pay];render();return}if(pm){var i=+pm.dataset.paym,its=allx(lastRows[i],i),ca2=i===nextJ?S.carry:[],all=its.every(function(x){return S.paid[i+':'+x.k]})&&ca2.every(function(e){return S.paid[e.id]});its.forEach(function(x){S.paid[i+':'+x.k]=!all});ca2.forEach(function(e){S.paid[e.id]=!all});render();return}var b=e.target.closest('[data-pre]');if(!b)return;
+  var pd=S.paid,px=S.extra,pi=S.inm,pa=S.add,pc=S.closed,pcr=S.carry;S=clone(DEF);S.paid=pd||{};S.extra=px||[];S.inm=pi||{};S.add=pa||{};S.closed=pc||{};S.carry=pcr||[];act=b.dataset.pre;
+  if(act==='xl'){[7,8,9].forEach(function(i){S.exp[i].on=0})}
+  if(act==='pause')S.exp[9].on=0;
+  build();render()});
+build();render();if(document.querySelectorAll)showTab(S.tab||'home');
+})();
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
+</body>
+</html>
