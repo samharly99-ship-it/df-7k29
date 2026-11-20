@@ -18,7 +18,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 :root[data-theme="dark"]{color-scheme:dark;--bg:#0b1120;--card:#131c31;--tx:#f1f5f9;--mu:#94a3b8;--bd:#25314d;--ac:#34d399;--ac2:#064e3b;--rd:#fb7185;--in:#1c2842}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0 auto;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:480px;padding-bottom:40px}
+body{margin:0 auto;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:480px;padding-bottom:88px}
 main{padding:14px;display:grid;gap:12px}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
 h1{font-size:18px;margin:0}h2{font-size:12px;margin:6px 2px 0;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
@@ -50,31 +50,46 @@ th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--bd);white-s
 .u2{padding:6px 10px;border-radius:10px;background:var(--in);color:var(--tx);font-weight:700;font-size:12px}
 .rgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;justify-items:center}
 .neg{color:var(--rd);font-weight:700}
+.pg{display:none;gap:12px}.pg.on{display:grid}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+nav button{flex:1;background:none;color:var(--mu);padding:8px 0 6px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button i{font-style:normal;font-size:19px}nav button.on{color:var(--ac)}
 </style>
 </head>
 <body>
 <main>
-  <div class="card"><h1>Debt-Free Planner</h1><div class="mu">Built from your Debt_Planner.xlsx. Change any number below and everything recalculates.</div></div>
+<section class="pg on" id="pg-home">
+  <div class="card"><h1>Debt-Free Planner</h1><div class="mu">Use the tabs at the bottom to move between pages.</div></div>
   <div class="card" id="hero"></div>
+</section>
+<section class="pg" id="pg-income">
   <h2>Money coming in each month</h2>
   <div class="card"><div id="incbar"></div><div class="mu" style="margin:10px 0 2px">Type the amounts below. They add up automatically and the whole plan updates.</div><div id="incin"></div></div>
+</section>
+<section class="pg" id="pg-pay">
   <h2>Pay month by month</h2>
   <div id="blocks"></div>
   <div class="card xf"><h3 style="margin:0 0 8px;font-size:15px">➕ Add an extra bill</h3><input type="text" id="xn" placeholder="What is it? (e.g. car repair)"><input type="number" inputmode="decimal" id="xa" placeholder="Amount"><div class="r"><button data-xadd="1">Next due month only</button><button class="g" data-xadd="0">Every month</button></div><div id="xlist"></div></div>
-  <h2>What if you have extra bills?</h2>
-  <div class="card" id="whatif"></div>
-  <h2>When each debt ends</h2>
-  <div class="card"><div id="gantt"></div></div>
+</section>
+<section class="pg" id="pg-charts">
   <h2>Total debt over time</h2>
   <div class="card"><div id="line"></div></div>
   <h2>Savings account build-up</h2>
   <div class="card" id="svline"></div>
+  <h2>When each debt ends</h2>
+  <div class="card"><div id="gantt"></div></div>
+  <h2>What if you have extra bills?</h2>
+  <div class="card" id="whatif"></div>
+</section>
+<section class="pg" id="pg-more">
   <h2>Update your numbers</h2>
   <div id="inputs" style="display:grid;gap:10px"></div>
   <h2>Month-by-month schedule</h2>
   <div class="card tw" id="tbl"></div>
 <div class="card"><button class="u2" data-restart="1" style="width:100%;padding:12px">Restart from December</button><div class="mu" style="margin-top:6px">Clears all ticks, closed months and monthly money you typed. Your settings and extra bills stay.</div></div>
+</section>
 </main>
+<nav id="nav"><button data-tab="home" class="on"><i>🏠</i>Home</button><button data-tab="income"><i>💵</i>Income</button><button data-tab="pay"><i>✅</i>Pay</button><button data-tab="charts"><i>📊</i>Charts</button><button data-tab="more"><i>⚙️</i>More</button></nav>
 <script>
 (function(){
 'use strict';
@@ -177,6 +192,7 @@ function whatif(){var bi=S.exp.findIndex(function(e){return e.n==='Extra bills (
   $('whatif').innerHTML=[0,25,50,100,150].map(function(v){var q=JSON.parse(JSON.stringify(pp));q.exp[bi]={a:v,on:1};var r=sim(q),l=r[r.length-1],ok=l.tot<=0.005,sv=r[r.length-1].svb;
     return '<div class="ir"><span>+$'+v+' a month<div class="mu">saved by then: '+m(sv)+'</div></span><b>'+(ok?mon(r.length-1):'Not in 5 years')+'</b><button class="u2" data-buf="'+v+'">Use</button></div>'}).join('')+'<div class="mu" style="padding-top:6px">Debt-free month if unplanned bills cost this much every month. Tap Use to put it in your plan.</div>';
 }
+function showTab(t){S.tab=t;var a=document.querySelectorAll('.pg');for(var i=0;i<a.length;i++)a[i].className='pg'+(a[i].id==='pg-'+t?' on':'');var b=document.querySelectorAll('#nav button');for(var j=0;j<b.length;j++)b[j].className=b[j].dataset.tab===t?'on':'';save();window.scrollTo(0,0)}
 function curJ(rows){var j=0;while(j<rows.length&&S.closed[j])j++;return j}
 function mpie(r,i){var N=0,P=0;allx(r,i).forEach(function(x){N+=x.a;if(S.paid[i+':'+x.k])P+=x.a});if(i===nextJ)S.carry.forEach(function(e){N+=e.a;if(S.paid[e.id])P+=e.a});
   var E=(r.net||0)+(r.ded||0),U=N-P,sh=Math.min(Math.max(0,N-E),U);return{E:E,N:N,P:P,rem:U-sh,sh:sh,left:Math.max(0,E-N)}}
@@ -217,12 +233,12 @@ document.addEventListener('change',function(e){var t=e.target;
   if(t.dataset.p){setp(t.dataset.p,parseFloat(t.value)||0);act='';render()}
   else if(t.dataset.c){setp(t.dataset.c,t.checked?1:0);act='';render()}
   else if(t.dataset.s&&t.value){S.start=t.value;render()}});
-document.addEventListener('click',function(e){var xa=e.target.closest('[data-xadd]'),xd=e.target.closest('[data-xdel]');if(xa){var xv=parseFloat($('xa').value);if(!(xv>0))return;S.extra.push({id:Date.now()+Math.floor(Math.random()*1000),n:$('xn').value.trim()||'Extra bill',a:xv,k:xa.dataset.xadd==='1'?nextJ+1:0});$('xn').value='';$('xa').value='';render();return}if(xd){S.extra.splice(+xd.dataset.xdel,1);render();return}var rs=e.target.closest('[data-restart]');if(rs){if(rs.dataset.c){S.paid={};S.closed={};S.carry=[];S.inm={};S.add={};S.start='2026-12';build();render();return}rs.dataset.c='1';rs.textContent='Tap again to confirm restart';setTimeout(function(){delete rs.dataset.c;rs.textContent='Restart from December'},3500);return}var ib=e.target.closest('[data-incbills]');if(ib){S.exp.forEach(function(e2){if(/^(Telephone bill|Building|Trading)$/.test(e2.n))e2.on=1});build();render();return}var cp=e.target.closest('[data-cpay]');if(cp){S.paid[cp.dataset.cpay]=!S.paid[cp.dataset.cpay];render();return}var cb=e.target.closest('[data-close]'),rb=e.target.closest('[data-reopen]');if(cb){var ci=+cb.dataset.close;if(ci!==nextJ)return;var dk=items(lastRows[ci],ci).map(function(x){return x.k});S.carry=S.carry.filter(function(e){if(S.paid[e.id]){delete S.paid[e.id];return false}return true});allx(lastRows[ci],ci).forEach(function(x){if(!S.paid[ci+':'+x.k])S.carry.push({id:'cr:'+ci+':'+x.k,from:ci,n:x.n,a:x.a,debt:dk.indexOf(x.k)>=0})});S.closed[ci]=true;render();return}if(rb){var ri=+rb.dataset.reopen;Object.keys(S.closed).forEach(function(k){if(+k>=ri)delete S.closed[k]});S.carry=S.carry.filter(function(e){if(e.from>=ri){delete S.paid[e.id];return false}return true});render();return}var bf=e.target.closest('[data-buf]');if(bf){var bj=S.exp.findIndex(function(e2){return e2.n==='Extra bills (buffer)'});S.exp[bj].a=+bf.dataset.buf;S.exp[bj].on=1;act='';build();render();return}var pb=e.target.closest('[data-pay]'),pm=e.target.closest('[data-paym]');if(pb){S.paid[pb.dataset.pay]=!S.paid[pb.dataset.pay];render();return}if(pm){var i=+pm.dataset.paym,its=allx(lastRows[i],i),ca2=i===nextJ?S.carry:[],all=its.every(function(x){return S.paid[i+':'+x.k]})&&ca2.every(function(e){return S.paid[e.id]});its.forEach(function(x){S.paid[i+':'+x.k]=!all});ca2.forEach(function(e){S.paid[e.id]=!all});render();return}var b=e.target.closest('[data-pre]');if(!b)return;
+document.addEventListener('click',function(e){var xa=e.target.closest('[data-xadd]'),xd=e.target.closest('[data-xdel]');if(xa){var xv=parseFloat($('xa').value);if(!(xv>0))return;S.extra.push({id:Date.now()+Math.floor(Math.random()*1000),n:$('xn').value.trim()||'Extra bill',a:xv,k:xa.dataset.xadd==='1'?nextJ+1:0});$('xn').value='';$('xa').value='';render();return}if(xd){S.extra.splice(+xd.dataset.xdel,1);render();return}var rs=e.target.closest('[data-restart]');if(rs){if(rs.dataset.c){S.paid={};S.closed={};S.carry=[];S.inm={};S.add={};S.start='2026-12';build();render();return}rs.dataset.c='1';rs.textContent='Tap again to confirm restart';setTimeout(function(){delete rs.dataset.c;rs.textContent='Restart from December'},3500);return}var tb=e.target.closest('[data-tab]');if(tb){showTab(tb.dataset.tab);return}var ib=e.target.closest('[data-incbills]');if(ib){S.exp.forEach(function(e2){if(/^(Telephone bill|Building|Trading)$/.test(e2.n))e2.on=1});build();render();return}var cp=e.target.closest('[data-cpay]');if(cp){S.paid[cp.dataset.cpay]=!S.paid[cp.dataset.cpay];render();return}var cb=e.target.closest('[data-close]'),rb=e.target.closest('[data-reopen]');if(cb){var ci=+cb.dataset.close;if(ci!==nextJ)return;var dk=items(lastRows[ci],ci).map(function(x){return x.k});S.carry=S.carry.filter(function(e){if(S.paid[e.id]){delete S.paid[e.id];return false}return true});allx(lastRows[ci],ci).forEach(function(x){if(!S.paid[ci+':'+x.k])S.carry.push({id:'cr:'+ci+':'+x.k,from:ci,n:x.n,a:x.a,debt:dk.indexOf(x.k)>=0})});S.closed[ci]=true;render();return}if(rb){var ri=+rb.dataset.reopen;Object.keys(S.closed).forEach(function(k){if(+k>=ri)delete S.closed[k]});S.carry=S.carry.filter(function(e){if(e.from>=ri){delete S.paid[e.id];return false}return true});render();return}var bf=e.target.closest('[data-buf]');if(bf){var bj=S.exp.findIndex(function(e2){return e2.n==='Extra bills (buffer)'});S.exp[bj].a=+bf.dataset.buf;S.exp[bj].on=1;act='';build();render();return}var pb=e.target.closest('[data-pay]'),pm=e.target.closest('[data-paym]');if(pb){S.paid[pb.dataset.pay]=!S.paid[pb.dataset.pay];render();return}if(pm){var i=+pm.dataset.paym,its=allx(lastRows[i],i),ca2=i===nextJ?S.carry:[],all=its.every(function(x){return S.paid[i+':'+x.k]})&&ca2.every(function(e){return S.paid[e.id]});its.forEach(function(x){S.paid[i+':'+x.k]=!all});ca2.forEach(function(e){S.paid[e.id]=!all});render();return}var b=e.target.closest('[data-pre]');if(!b)return;
   var pd=S.paid,px=S.extra,pi=S.inm,pa=S.add,pc=S.closed,pcr=S.carry;S=clone(DEF);S.paid=pd||{};S.extra=px||[];S.inm=pi||{};S.add=pa||{};S.closed=pc||{};S.carry=pcr||[];act=b.dataset.pre;
   if(act==='xl'){[7,8,9].forEach(function(i){S.exp[i].on=0})}
   if(act==='pause')S.exp[9].on=0;
   build();render()});
-build();render();
+build();render();if(document.querySelectorAll)showTab(S.tab||'home');
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
